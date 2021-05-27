@@ -56,3 +56,14 @@
 ### Verify certificates
     openssl s_client -verify_return_error -servername server -connect server:443
 - WIP (`verify_return_error` error on top SSL sites)
+
+# Websites & Hosting
+
+## IIS running ASP.NET Core
+
+### Pass environment variable to Kestrel
+    <aspNetCore>
+        <environmentVariables>
+            <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="DevLocal" />
+        </environmentVariables>
+    </aspNetCore>

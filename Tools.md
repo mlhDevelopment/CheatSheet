@@ -140,6 +140,9 @@ then restart
 ### Get a random array of numbers
     (Get-Random $(0..255) -Count 16 | % { "{0:x2}" -f $_ }) -join '' | Set-Clipboard
 
+### Create a self-signed certificate
+    New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName "testdomain.local" -FriendlyName "testdomain" -NotAfter (Get-Date).AddYears(10)
+
 # Robocopy
 
 ### Common flags
