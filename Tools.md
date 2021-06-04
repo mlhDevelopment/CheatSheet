@@ -119,8 +119,8 @@ then restart
     $b.FromBase64() | % { "{0:x2}" -f $_ } | Join-String -Separator ''
 
 ### Powershell file to byte array to hex string
-    (Get-Content .\binary.bin -encoding byte | % { "{0:x2}" -f $_ }) -join '' | Set-Clipboard
-    (Get-Content .\Ponzi.jpg -encoding byte | % { "0x{0:x2}" -f $_ }) -join ', '  | Set-Clipboard
+    (Get-Content .\binary.bin -AsByteStream | % { "{0:x2}" -f $_ }) -join '' | Set-Clipboard
+    (Get-Content .\Ponzi.jpg -AsByteStream | % { "0x{0:x2}" -f $_ }) -join ', '  | Set-Clipboard
 
 ### Byte array directly to ascii characters
     $b | % { [Convert]::ToChar($_) } | Join-String -Separator ''
@@ -129,10 +129,10 @@ then restart
 ### Byte array to file
     [regex]::Matches($a.replace("0x",""), "..") | 
         % { [byte]::Parse($_, 515) } | 
-        Set-Content C:\out.xlsx -Encoding byte
+        Set-Content C:\out.xlsx -AsByteStream
 
 ### Base64 directly to binary file
-    set-content -value $a.FromBase64() -Encoding byte -Path C:\x.png
+    set-content -value $a.FromBase64() -AsByteStream -Path C:\x.png
 
 ### String to binary byte array (UTF8)
     [system.text.encoding]::UTF8.GetBytes($a)

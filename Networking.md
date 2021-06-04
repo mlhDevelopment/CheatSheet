@@ -67,3 +67,24 @@
             <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="DevLocal" />
         </environmentVariables>
     </aspNetCore>
+
+## Azure DevOps
+
+### Run a pipeline
+    az pipelines run --project myproj --name mypipeline --branch ifnotmain
+
+## Azure Hosting
+
+### Modules
+    Install-Module Az.Websites
+    Install-Module Az.Monitor
+
+### Login
+    Connect-AzAccount
+
+### Find a website
+    Get-AzWebApp | ? { $_.name -like '*test*' -and $_.name -like '*app*' } | select Name,id | fl
+
+### Use az to tail a web log
+    az webapp log tail --ids resourceid
+    
