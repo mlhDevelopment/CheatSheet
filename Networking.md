@@ -57,6 +57,23 @@
     openssl s_client -verify_return_error -servername server -connect server:443
 - WIP (`verify_return_error` error on top SSL sites)
 
+## Time & Date
+
+### Display a chart of clock drift compared to a server
+    w32tm /stripchart /dataonly /computer:pool.ntp.org
+
+### Show time sync server
+    w32tm /query /status
+
+### Force a resync
+    w32tm /resync /rediscover
+
+### Set to use an explicit pool
+    w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
+
+### Set to use domain heirarchy
+    w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
+
 # Websites & Hosting
 
 ## IIS running ASP.NET Core
@@ -75,9 +92,13 @@
 
 ## Azure Hosting
 
-### Modules
+### Install all Azure modules
+    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+
+### Install individual modules
     Install-Module Az.Websites
     Install-Module Az.Monitor
+    Install-Module Az.Network
 
 ### Login
     Connect-AzAccount
