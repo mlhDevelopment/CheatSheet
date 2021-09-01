@@ -35,7 +35,7 @@
     curl.exe 'http://server/endpoint' --data-ascii '{"data": 42}' -H 'Content-Type: application/json'
 
 ### Monitor website
-    while($true) { $(curl -k -s -f -w "%{http_code}`n" https://server/endpoint -o C:\tmp.junk); sleep 3 }
+    while($true) { $(curl -k -s -f -w "%{http_code}`n" https://server/endpoint -o C:\etc\tmp.junk); sleep 3 }
 
 ### Custom user agent (e.g. dye trace)
     curl -s -A "Mozilla/5.0 (mlhDevelopment)" "http://server/endpoint"
@@ -87,13 +87,35 @@
 
 ## Azure DevOps
 
+### Install Azure CLI
+Download & install from https://aka.ms/installazurecliwindows
+
+### Install additional modules
+    az install azure-devops
+
+### Login
+    az login
+
+### View/set your current (active operating) subscription
+    az account show
+    az account list
+    az account set -s "Name or Id"
+
+### View resources groups in the active subscription
+    az group list
+    az group show -n "Name"
+    az group show -n "Name" --subscription "Not Active Subscription"
+
+### 
+
+
 ### Run a pipeline
     az pipelines run --project myproj --name mypipeline --branch ifnotmain
 
 ## Azure Hosting
 
 ### Install all Azure modules
-    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+    Install-Module -Name Az -Scope AllUsers -Repository PSGallery -Force
 
 ### Install individual modules
     Install-Module Az.Websites

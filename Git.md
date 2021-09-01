@@ -65,6 +65,14 @@
     git fetch upstream
     git fetch --all
 
+## Recover
+
+### View internal, untracked references (reset hard fail)
+    git reflog show
+
+Useful after a `git reset --hard` but you lost some changes. Find the change you need to recover, switch to it (`git checkout 'HEAD@{4}'`) 
+and if it is what you need to recover, create a branch (`git switch -c pivot`).
+
 # Repo Maintenance
 
 ### Git command with repo as parameter

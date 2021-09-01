@@ -62,7 +62,17 @@
         },
         {
           "properties": {
-            "prefix": "\u003cdarkGray\u003eon\u003c/\u003e \u003cwhite\u003egit:\u003c/\u003e"
+            "prefix": "\u003cdarkGray\u003eon\u003c/\u003e \u003cwhite\u003egit:\u003c/\u003e",
+            "display_stash_count": true,
+            "display_upstream_icon": false,
+            "display_status": true,
+            "status_colors_enabled": true,
+            "color_background": false,
+            "local_changes_color": "#ffeb3b",
+            "working_color": "#E84855",
+            "staging_color": "#2FDA4E",
+            "ahead_color": "#2EC4B6",
+            "behind_color": "#8A4FFF"
           },
           "style": "plain",
           "type": "git"
