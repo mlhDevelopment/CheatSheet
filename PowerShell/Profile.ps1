@@ -1,4 +1,4 @@
-# Save to $PROFILE.AllUsersAllHosts\Profile.ps1
+# Save to $PROFILE.AllUsersAllHosts (the Profile.ps1 file)
 
 # Prompts
 Import-Module posh-git
