@@ -15,7 +15,7 @@
     nmap -sU --script nbstat.nse -p137 server
     nmap --script smb-os-discovery.nse -p445 server
 
-## Curl
+## Curl & Invoke-WebRequest
 
 ### Basic request
     curl -k -s -f -w "%{http_code}" https://server/endpoint -o C:\etc\tmp.junk
@@ -33,15 +33,44 @@
 
 ### Post data
     curl.exe 'http://server/endpoint' --data-ascii '{"data": 42}' -H 'Content-Type: application/json'
+    curl.exe -X POST -d '{"data": 42}' -H 'Content-Type: application/json' 'http://server/endpoint' 
 
-### Monitor website
+### Monitor website (Curl)
     while($true) { $(curl -k -s -f -w "%{http_code}`n" https://server/endpoint -o C:\etc\tmp.junk); sleep 3 }
+
+### Monitor website function
+    function Monitor-Website([string]$url, [int]$sleep = 3) {
+        while($true) { 
+            [int]$result = $(curl -k -s -f -w "%{http_code}" $url -o C:\etc\tmp.junk)
+            $color = [System.ConsoleColor]::Green
+            if($result -eq 200) {
+                $color = [System.ConsoleColor]::White
+            } elseif($result -ge 500) {
+                $color = [System.ConsoleColor]::Red
+            } elseif($result -ge 400) {
+                $color = [System.ConsoleColor]::DarkMagenta
+            } elseif($result -lt 200) {
+                $color = [System.ConsoleColor]::Yellow
+            }
+            write-host $result -ForegroundColor $color
+            Start-Sleep $sleep
+        }
+    }
+    
+### Monitor website & parse response
+    while($true) { $response = Invoke-WebRequest 'https://server/endpoint'; $results = $response.Content.split('searchTerm').Length; "$results".PadLeft($results * 3); Start-sleep 3 }
+
+This will print verbose messages if enabled, so may require `$VerbosePreference = "SilentlyContinue"` before starting
 
 ### Custom user agent (e.g. dye trace)
     curl -s -A "Mozilla/5.0 (mlhDevelopment)" "http://server/endpoint"
 
 ### Use a proxy (e.g. Fiddler)
     curl.exe 'http://server/endpoint' -x 127.0.0.1:8888
+
+### Post OIDC client credentials
+    curl.exe -d "client_id=myClientId&grant_type=client_credentials&client_secret=myClientSecret" "https://idpserver/connect/token"
+
 
 ## OpenSSL
 
@@ -56,6 +85,10 @@
 ### Verify certificates
     openssl s_client -verify_return_error -servername server -connect server:443
 - WIP (`verify_return_error` error on top SSL sites)
+
+### Retrieve certificates for SMTP server
+    openssl s_client -starttls smtp -connect server:443
+
 
 ## Time & Date
 

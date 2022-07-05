@@ -85,24 +85,23 @@ _Uses FullPath and NodeObjectType as temp tables_
         NodeType = NodeObjectType.Name,
         ContentType = cmsContentType.alias,
         ContentDesc = cmsContentType.description,
-      IsPublished = umbracoDocumentVersion.Published,
-      Template = uTemplate.text
+        IsPublished = umbracoDocumentVersion.Published,
+        Template = uTemplate.text
     FROM #FullPath AS FullPath
         JOIN #NodeObjectType AS NodeObjectType
             ON FullPath.nodeObjectType = NodeObjectType.TypeId
         LEFT JOIN umbracoContent
-        ON FullPath.NodeId = umbracoContent.nodeId
+            ON FullPath.NodeId = umbracoContent.nodeId
         LEFT JOIN cmsContentType 
             ON umbracoContent.contentTypeId = cmsContentType.nodeId
-      LEFT JOIN umbracoContentVersion
-        ON FullPath.NodeId = umbracoContentVersion.nodeId
-        AND umbracoContentVersion.[current] = 1
-      LEFT JOIN umbracoDocumentVersion
-        ON umbracoContentVersion.id = umbracoDocumentVersion.id
-      LEFT JOIN cmsTemplate
-        ON umbracoDocumentVersion.templateId = cmsTemplate.nodeId
-      LEFT JOIN umbracoNode AS uTemplate
-        ON cmsTemplate.nodeId = uTemplate.id
+        LEFT JOIN umbracoContentVersion
+            ON FullPath.NodeId = umbracoContentVersion.nodeId
+        LEFT JOIN umbracoDocumentVersion
+            ON umbracoContentVersion.id = umbracoDocumentVersion.id
+        LEFT JOIN cmsTemplate
+            ON umbracoDocumentVersion.templateId = cmsTemplate.nodeId
+        LEFT JOIN umbracoNode AS uTemplate
+            ON cmsTemplate.nodeId = uTemplate.id
     WHERE FullPath.trashed = 0 AND
         FullPath.NodeId = <Node Id, int, >
 
@@ -141,19 +140,28 @@ _Uses FullPath and NodeObjectType as temp tables_
     WHERE (umbracoDocument.nodeId IS NULL OR umbracoDocument.published = 1) AND
         nodeDocument.id = <Node Id, int, >
 
+### Explore Doc Types from the cmsDocumentType table
+    ; WITH dt AS (SELECT id, text FROM umbracoNode WHERE nodeObjectType = 'A2CB7800-F571-4787-9638-BC48539A0EFB')
+    SELECT DocTypeId = dt.id,
+      DocTypeName = dt.text,
+        templateNode = templateNode.text,
+      AllowedOn = allowedNode.text + ' (' + CAST(cmsContentTypeAllowedContentType.AllowedId AS VARCHAR(10)) + ')'
+    FROM dt
+        LEFT JOIN cmsDocumentType
+            ON dt.id = cmsDocumentType.contentTypeNodeId
+        LEFT JOIN umbracoNode templateNode
+            ON templateNode.id = cmsDocumentType.templateNodeId
+      LEFT JOIN cmsContentTypeAllowedContentType
+        ON dt.id = cmsContentTypeAllowedContentType.Id
+      LEFT JOIN umbracoNode allowedNode
+        ON cmsContentTypeAllowedContentType.AllowedId = allowedNode.Id
+    ORDER BY DocTypeName, DocTypeId
+
+
 # Umbraco v7
 
 ## Database Queries
 
-### Explore the cmsDocumentType table
-    ; WITH dt AS (SELECT id, text FROM umbracoNode WHERE nodeObjectType = 'A2CB7800-F571-4787-9638-BC48539A0EFB')
-    SELECT dtid = dt.id, dtName = dt.text,
-        templateNode = templateNode.text
-    FROM dt
-        LEFT JOIN cmsDocumentType cdt
-            ON dt.id = cdt.contentTypeNodeId
-        LEFT JOIN umbracoNode templateNode
-            ON templateNode.id = cdt.templateNodeId
 
 ### Explore the cmsTemplate table
     ; WITH n AS (SELECT id, text, objtype = nodeObjectType, parentID FROM umbracoNode)

@@ -28,9 +28,32 @@
 - C:\Windows\Microsoft.NET\Framework\v2.0.50727\aspnet_compiler for .NET 2
 - C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler for .NET 4
 
-### LogParser
+## LogParser
+
+### Examples
     LogParser.exe "select c-ip, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime from $path where time > '13:00:00'"
     LogParser.exe "select c-ip as IP_Address, sc-status AS HTTP_Status_Code, count(*) as Count INTO accessByIp.csv from \\server\path\log.log group by c-ip, sc-status"
+    LogParser.exe "select TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime, sc-status, time-taken, cs-uri-stem INTO out.csv from 'log with spaces.log'"
+
+### Fields
+
+    - date - Date (UTC), useful for filtering but the file is already probably single day
+    - time - UTC Time, simplest for querying, e.g. `time > '13:00:00'` (after 1 PM UTC)
+      - `TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime` - Displays time & date converted to local TZ
+    - cs-uri-stem - URL path
+    - cs-uri-query - query string, useful to filter on if doing a dye trace
+    - c-ip - Client IP
+    - cs(User-Agent) - UA string, often very long
+    - cs-host - host name, useful to filter on a multi-tenant site
+    - sc-status - HTTP status code
+    - sc-bytes - response bytes (server-to-client)
+    - cs-bytes - request bytes (client-to-server)
+    - time-taken - request/response time, in milliseconds
+
+### Flags
+
+    - `-stats:OFF` - disable stats at the end
+    - `-q:ON` - quiet mode (don't page, display all results)
 
 # Windows
 

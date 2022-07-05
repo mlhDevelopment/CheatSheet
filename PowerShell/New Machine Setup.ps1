@@ -20,6 +20,7 @@ Install-Module -Name oh-my-posh -Scope AllUsers -AllowPrerelease -Repository PSG
 
 ### Install other modules
 Install-Module -Name Az -Scope AllUsers -Repository PSGallery -Force
+Install-Module -Name SqlServer -Scope AllUsers -Repository PSGallery
 
 
 ### SSMS Templates linked so they are easy to access (Run SSMS at least once before running)

@@ -28,7 +28,7 @@
 ## Advanced
 
 ### Local config overrides (e.g. for github access)
-    git config --local user.name 'mlhDevelopment'
+    git config --local user.name 'Matt Howell'
     git config --local user.email 'mlhDevelopment@gmail.com'
 
 ### Enable auto-pruning on fetch or pull (current repo only)

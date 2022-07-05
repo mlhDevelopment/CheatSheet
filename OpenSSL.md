@@ -100,8 +100,11 @@ To read configuration settings from a specific file, set the environment variabl
 ### Convert PEM to PKCS12
 	openssl pkcs12 -export -in public.crt -inkey private.key -out cert.pfx
 
-### Convert PEM to PKCS12 with SHA2 signing capabilities (added to above)
+#### ... with SHA2 signing capabilities (added to above)
 	-CSP "Microsoft Enhanced RSA and AES Cryptographic Provider"
+
+#### ... with friendly name (added to above)
+	-name "Friendly, Exp 2099"
 
 ### Convert PKCS12 to PEM (exports as multiple certs in single file) 
 	openssl pkcs12 -nodes -in cert.pfx -out cert.pem
@@ -136,7 +139,7 @@ unsupported; use DER --> PEM --> PKCS12
     distinguished_name = req_distinguished_name
     req_extensions = req_ext
     prompt = no
-    output_password = passwd123
+    output_password = includeIfGeneratingKey
     
     [ req_distinguished_name ]
     C = US

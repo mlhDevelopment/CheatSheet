@@ -91,22 +91,32 @@ TODO: For xml raw, elements, root('rows') -- <rows><row><Col1>...</Col1><Col2>..
     FOR XML PATH('Parent'), ROOT('Parents'), TYPE
 
 ### XML from file
-	DECLARE @xml XML;
-	SELECT @xml = bulkcolumn FROM OPENROWSET(BULK 'c:\datafile.xml',single_blob) AS b;
+    DECLARE @xml XML;
+    SELECT @xml = bulkcolumn FROM OPENROWSET(BULK 'c:\datafile.xml',single_blob) AS b;
 
 ### See preview of all tables
-	SELECT 'SELECT TOP 3 ''' + TABLE_NAME + 
-		''', * FROM [' + TABLE_SCHEMA + '].[' + TABLE_NAME + ']' AS sql 
-	FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'
+    SELECT 'SELECT TOP 3 ''' + TABLE_NAME + 
+      ''', * FROM [' + TABLE_SCHEMA + '].[' + TABLE_NAME + ']' AS sql 
+    FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'
 
 ### List all simple database objects (from INFORMATION_SCHEMA)
-	      SELECT obj = 'TABLE: ' + table_catalog + '.' + table_schema + '.' + table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'
-	UNION SELECT obj = 'VIEW : ' + table_catalog + '.' + table_schema + '.' + table_name FROM information_schema.tables WHERE table_type <> 'BASE TABLE'
-	UNION SELECT obj = 'SPROC: ' + routine_catalog + '.' + routine_schema + '.' + routine_name FROM INFORMATION_SCHEMA.ROUTINES
+          SELECT obj = 'TABLE: ' + table_catalog + '.' + table_schema + '.' + table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'
+    UNION SELECT obj = 'VIEW : ' + table_catalog + '.' + table_schema + '.' + table_name FROM information_schema.tables WHERE table_type <> 'BASE TABLE'
+    UNION SELECT obj = 'SPROC: ' + routine_catalog + '.' + routine_schema + '.' + routine_name FROM INFORMATION_SCHEMA.ROUTINES
 
 ### Left Pad a field with spaces
-	LEFT('                   ', @lenToPad - LEN(_______)) + _______
-	RIGHT('                  ' + RTRIM(_______), @lenToPad)
+    LEFT('                   ', @lenToPad - LEN(_______)) + _______
+    RIGHT('                  ' + RTRIM(_______), @lenToPad)
+
+### Generate a sequence ID
+    SELECT NEXT VALUE FOR seqSequenceName
+
+### Generate a batch of sequences
+    EXEC dbo.sp_sequence_get_range @sequence_name = 'seqSequenceName', @range_size = 1000, @range_first_value = NULL
+
+Useful if the sequence gets reset and needs to be fast forwarded to an existing ID
+
+
 
 # Server Management
 
@@ -345,20 +355,93 @@ TODO: For xml raw, elements, root('rows') -- <rows><row><Col1>...</Col1><Col2>..
     ALTER DATABASE dbname MODIFY FILE ( NAME = dbname_Log ,  SIZE = 1024MB )
 
 ### Check space/size by table
-    IF OBJECT_ID('tempdb..#space') IS NOT NULL DROP TABLE #space
-    GO
-    CREATE TABLE #space (table_name sysname, row_count INT, reserved_size VARCHAR(50), data_size VARCHAR(50), index_size VARCHAR(50), unused_size VARCHAR(50))
-    INSERT #space EXEC sp_msforeachtable 'sp_spaceused ''?'''
-
-    ALTER TABLE #space ADD reserved INT, data INT, [index] INT, unused INT
-    UPDATE #space
-    SET reserved = CAST(REPLACE(reserved_size, ' KB', '') AS integer),
-        data = CAST(REPLACE(data_size, ' KB', '') AS integer),
-        [index] = CAST(REPLACE(index_size, ' KB', '') AS integer),
-        unused = CAST(REPLACE(unused_size, ' KB', '') AS integer)
-    ALTER TABLE #space DROP COLUMN reserved_size, data_size, index_size, unused_size
-
-    SELECT * FROM #space ORDER BY data DESC
+    ;WITH extra AS
+    (   -- Get info for FullText indexes, XML Indexes, etc
+        SELECT  sit.[object_id],
+                sit.[parent_id],
+                ps.[index_id],
+                SUM(ps.reserved_page_count) AS [reserved_page_count],
+                SUM(ps.used_page_count) AS [used_page_count]
+        FROM    sys.dm_db_partition_stats ps
+        INNER JOIN  sys.internal_tables sit
+                ON  sit.[object_id] = ps.[object_id]
+        WHERE   sit.internal_type IN
+                  (202, 204, 207, 211, 212, 213, 214, 215, 216, 221, 222, 236)
+        GROUP BY    sit.[object_id],
+                    sit.[parent_id],
+                    ps.[index_id]
+    ), agg AS
+    (   -- Get info for Tables, Indexed Views, etc (including "extra")
+        SELECT  ps.[object_id] AS [ObjectID],
+                ps.index_id AS [IndexID],
+                SUM(ps.in_row_data_page_count) AS [InRowDataPageCount],
+                SUM(ps.used_page_count) AS [UsedPageCount],
+                SUM(ps.reserved_page_count) AS [ReservedPageCount],
+                SUM(ps.row_count) AS [RowCount],
+                SUM(ps.lob_used_page_count + ps.row_overflow_used_page_count)
+                        AS [LobAndRowOverflowUsedPageCount]
+        FROM    sys.dm_db_partition_stats ps
+        GROUP BY    ps.[object_id],
+                    ps.[index_id]
+        UNION ALL
+        SELECT  ex.[parent_id] AS [ObjectID],
+                ex.[object_id] AS [IndexID],
+                0 AS [InRowDataPageCount],
+                SUM(ex.used_page_count) AS [UsedPageCount],
+                SUM(ex.reserved_page_count) AS [ReservedPageCount],
+                0 AS [RowCount],
+                0 AS [LobAndRowOverflowUsedPageCount]
+        FROM    extra ex
+        GROUP BY    ex.[parent_id],
+                    ex.[object_id]
+    ), spaceused AS
+    (
+    SELECT  agg.[ObjectID],
+            OBJECT_SCHEMA_NAME(agg.[ObjectID]) AS [SchemaName],
+            OBJECT_NAME(agg.[ObjectID]) AS [TableName],
+            SUM(CASE
+                    WHEN (agg.IndexID < 2) THEN agg.[RowCount]
+                    ELSE 0
+                END) AS [Rows],
+            SUM(agg.ReservedPageCount) * 8 AS [ReservedKB],
+            SUM(agg.LobAndRowOverflowUsedPageCount +
+                CASE
+                    WHEN (agg.IndexID < 2) THEN (agg.InRowDataPageCount)
+                    ELSE 0
+                END) * 8 AS [DataKB],
+            SUM(agg.UsedPageCount - agg.LobAndRowOverflowUsedPageCount -
+                CASE
+                    WHEN (agg.IndexID < 2) THEN agg.InRowDataPageCount
+                    ELSE 0
+                END) * 8 AS [IndexKB],
+            SUM(agg.ReservedPageCount - agg.UsedPageCount) * 8 AS [UnusedKB],
+            SUM(agg.UsedPageCount) * 8 AS [UsedKB]
+    FROM    agg
+    GROUP BY    agg.[ObjectID],
+                OBJECT_SCHEMA_NAME(agg.[ObjectID]),
+                OBJECT_NAME(agg.[ObjectID])
+    )
+    SELECT sp.SchemaName,
+          sp.TableName,
+          sp.[Rows],
+          sp.ReservedKB,
+          (sp.ReservedKB / 1024.0 / 1024.0) AS [ReservedGB],
+          sp.DataKB,
+          (sp.DataKB / 1024.0 / 1024.0) AS [DataGB],
+          sp.IndexKB,
+          (sp.IndexKB / 1024.0 / 1024.0) AS [IndexGB],
+          sp.UsedKB AS [UsedKB],
+          (sp.UsedKB / 1024.0 / 1024.0) AS [UsedGB],
+          sp.UnusedKB,
+          (sp.UnusedKB / 1024.0 / 1024.0) AS [UnusedGB],
+          so.[type_desc] AS [ObjectType],
+          so.[schema_id] AS [SchemaID],
+          sp.ObjectID
+    FROM   spaceused sp
+      INNER JOIN sys.all_objects so
+        ON so.[object_id] = sp.ObjectID
+    WHERE so.is_ms_shipped = 0
+    ORDER BY sp.DataKB DESC
 
 ### Check space for a single database
     EXEC sp_spaceused
