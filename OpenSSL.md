@@ -50,6 +50,8 @@ To read configuration settings from a specific file, set the environment variabl
 ### Create CSR from config file (see below)
 	openssl req -new -key private.key -out csr.csr –config configfile.conf
 
+NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-config` to require the entire configuration setup.
+
 ### Create CA (valid for 20 years)
 	openssl req -new -x509 -days 7300 -extensions v3_ca -sha256 -keyout CAprivate.key -out CApublic.crt
 
@@ -66,12 +68,12 @@ To read configuration settings from a specific file, set the environment variabl
 # Reading
 
 ### Read PEM formatted file
-    openssl x509 -inform pem -noout -text -in cert.crt
+  openssl x509 -inform pem -noout -text -in cert.crt
 
 ### Read DER formatted file
 	openssl x509 -inform der -noout -text -in cert.der
 
-### Read PKCS12 formatted file
+### Read PFX formatted file
 	openssl pkcs12 -info -nodes -in cert.pfx
 
 ### Read a CSR (in PEM format)
@@ -97,7 +99,7 @@ To read configuration settings from a specific file, set the environment variabl
 ### Convert PEM to DER (RSA private key)
 	openssl rsa -outform der -in rsakey.key -out rsakey.der
 
-### Convert PEM to PKCS12
+### Convert PEM to PFX 🔥
 	openssl pkcs12 -export -in public.crt -inkey private.key -out cert.pfx
 
 #### ... with SHA2 signing capabilities (added to above)
@@ -106,7 +108,7 @@ To read configuration settings from a specific file, set the environment variabl
 #### ... with friendly name (added to above)
 	-name "Friendly, Exp 2099"
 
-### Convert PKCS12 to PEM (exports as multiple certs in single file) 
+### Convert PFX to PEM (exports as multiple certs in single file) 
 	openssl pkcs12 -nodes -in cert.pfx -out cert.pem
 
 ### Convert DER to PEM
@@ -121,17 +123,29 @@ To read configuration settings from a specific file, set the environment variabl
 ### Convert PEMs to P7B
 	openssl crl2pkcs7 -nocrl -certfile domain.crt -certfile ca-chain.crt -out domain.p7b
 
-### Convert PKCS12 to DER
-unsupported; use PKCS12 --> PEM --> DER
-
-### Convert DER to PKCS12
-unsupported; use DER --> PEM --> PKCS12
-
 ### Convert encrypted key to plain (encoded)
 	openssl rsa -in rsakey.key -out unencrypted.key
 
 ### Convert RSA formatted key to PVK format
 	openssl rsa -in rsakey.key -outform PVK -pvk-strong -out pvkkey.key
+
+## Combination Recipes
+
+### Convert PFX to DER
+
+1. PKCS12 to PEM
+2. PEM to DER
+
+### Convert DER to PFX
+
+1. DER to PEM 
+2. PEM to PKCS12
+
+### PFX with P7B intermediates
+
+1. PKCS7 to PEM
+2. Manually combine public cert as PEM to PKCS7 PEM in a single file
+3. PEM to PKCS12
 
 # CSR Config Example
     [ req ]
@@ -152,6 +166,8 @@ unsupported; use DER --> PEM --> PKCS12
 
     [ req_ext ]
     subjectAltName = @alt_names
+    keyUsage = digitalSignature, keyEncipherment 
+    extendedKeyUsage = serverAuth
 
     [ alt_names ]
     DNS.1  = Include_CN_Value

@@ -580,3 +580,10 @@ Useful if the sequence gets reset and needs to be fast forwarded to an existing 
     PRINT @alter_command
     EXEC sp_executesql @alter_command
 
+### Check recovery mode
+
+    SELECT name, recovery_model_desc FROM sys.databases
+
+### Change recovery mode
+
+    ALTER DATABASE [db_name] SET RECOVERY SIMPLE;
