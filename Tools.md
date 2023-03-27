@@ -55,6 +55,11 @@
     - `-stats:OFF` - disable stats at the end
     - `-q:ON` - quiet mode (don't page, display all results)
 
+### Aggregate
+    $logs = ls -Filter *.log
+    $logs | % { LogParser.exe "select '$($_.name)' as file, time-taken, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO $($_.name).csv from '$($_.name)' where time > '00:45:00'" }
+    $logs | % { get-content "$($_.name).csv" | Add-Content CombinedLogs.csv }
+
 # Windows
 
 ### See why computer recent went to sleep
