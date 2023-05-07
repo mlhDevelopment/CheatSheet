@@ -7,9 +7,9 @@
     git config --global user.email 'mhowell@work.com'
 
 ### Set Notepad++ as the default editor
-    git config --global core.editor \"C:/Program Files/notepad++/notepad++.exe\" -multiInst -nosession
+    git config --global core.editor '\"C:/Program Files/notepad++/notepad++.exe\" -multiInst -nosession'
 
-### Set P4 as merge tool (Needed??)
+### Set P4 as merge tool
     git config --global mergetool.p4merge.path 'C:/Program Files/Perforce/p4merge.exe'
     git config --global mergetool.p4merge.cmd 'p4merge.exe \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"'
     git config --global merge.tool p4merge

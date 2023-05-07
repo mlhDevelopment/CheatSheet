@@ -1,0 +1,122 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "console_title": true,
+  "blocks": [
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "white",
+          "properties": {
+            "display_version": false,
+            "postfix": ")",
+            "prefix": "("
+          },
+          "style": "plain",
+          "type": "python"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "type": "newline"
+    },
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "lightBlue",
+          "properties": {
+            "prefix": "",
+            "text": "#"
+          },
+          "style": "plain",
+          "type": "text"
+        },
+        {
+          "foreground": "red",
+          "properties": {
+            "root_icon": "\u0008\u0008\u0008%"
+          },
+          "style": "plain",
+          "type": "root"
+        },
+        {
+          "properties": {
+            "host_color": "green",
+            "prefix": "",
+            "user_color": "cyan",
+            "user_info_separator": " \u003cdarkGray\u003e@\u003c/\u003e "
+          },
+          "style": "plain",
+          "type": "session"
+        },
+        {
+          "foreground": "lightYellow",
+          "properties": {
+            "prefix": "\u003cdarkGray\u003ein \u003c/\u003e",
+            "style": "full"
+          },
+          "style": "plain",
+          "type": "path"
+        },
+        {
+          "properties": {
+            "prefix": "\u003cdarkGray\u003eon\u003c/\u003e \u003cwhite\u003egit:\u003c/\u003e",
+            "display_stash_count": true,
+            "display_upstream_icon": false,
+            "display_status": true,
+            "status_colors_enabled": true,
+            "color_background": false,
+            "local_changes_color": "#ffeb3b",
+            "working_color": "#E84855",
+            "staging_color": "#2FDA4E",
+            "ahead_color": "#2EC4B6",
+            "behind_color": "#8A4FFF"
+          },
+          "style": "plain",
+          "type": "git"
+        },
+        {
+          "foreground": "darkGray",
+          "properties": {
+            "postfix": "]",
+            "prefix": "["
+          },
+          "style": "plain",
+          "type": "time"
+        },
+        {
+          "foreground": "red",
+          "properties": {
+            "always_numeric": true,
+            "prefix": " C:"
+          },
+          "style": "plain",
+          "type": "exit"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "type": "newline"
+    },
+    {
+      "alignment": "left",
+      "segments": [
+        {
+          "foreground": "lightRed",
+          "properties": {
+            "postfix": "",
+            "prefix": "",
+            "text": "$"
+          },
+          "style": "plain",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "final_space": true
+}

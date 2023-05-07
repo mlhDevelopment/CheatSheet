@@ -6,25 +6,21 @@
 
   - Even if you will set it to Unrestricted later, leave as signed until the machine is mostly setup
 
-- Install Chocolatey
-
-      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
-      iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
 - Install np++, openssl, and git through Chocolatey
   
       choco install -y -notsilent notepadplusplus openssl git
 
 - Clone personal repositories
 
-      mkdir C:\etc\github
+      mkdir C:\etc\GitHub
 
 # Other setup steps
 *Things not automated by PowerShell (see PowerShell\New Machine \*.ps1) that can be ran independently of the setup steps*
 - Install Powershell 7
 - Install Windows Terminal from the Windows Store
-- Download FantasqueSansMono font from https://www.nerdfonts.com/font-downloads
-  - Then update custom font for Windows Terminal in the settings profiles.defaults.fontFace:FantasqueSansMono
+- Download FantasqueSansMono font from https://www.nerdfonts.com/font-downloads aka https://github.com/ryanoasis/nerd-fonts/releases
+  - Install FantasqueSansMNerdFont-Regular for all users
+  - Then update custom font for Windows Terminal in the settings profiles.defaults.font.face:"FantasqueSansM Nerd Font"
 - Migrate Outlook signature
 - Migrate Windows features & settings
 - Upgrade bios and update bios settings

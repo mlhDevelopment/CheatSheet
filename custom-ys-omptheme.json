@@ -1,122 +1,102 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-  "console_title": true,
+  "version": 2,
+  "final_space": true,
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "white",
-          "properties": {
-            "display_version": false,
-            "postfix": ")",
-            "prefix": "("
-          },
+          "type": "python",
           "style": "plain",
-          "type": "python"
+          "foreground": "white",
+          "template": "({{ if .Error }}{{ .Error }}{{ else }}{{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }}{{ end }})",
+          "properties": {
+            "fetch_version": false
+          }
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
       "type": "newline"
     },
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "lightBlue",
-          "properties": {
-            "prefix": "",
-            "text": "#"
-          },
+          "type": "text",
           "style": "plain",
-          "type": "text"
+          "foreground": "lightBlue",
+          "template": "# "
         },
         {
+          "type": "root",
+          "style": "plain",
           "foreground": "red",
+          "template": " \uf0e7 ",
           "properties": {
             "root_icon": "\u0008\u0008\u0008%"
-          },
-          "style": "plain",
-          "type": "root"
+          }
         },
         {
-          "properties": {
-            "host_color": "green",
-            "prefix": "",
-            "user_color": "cyan",
-            "user_info_separator": " \u003cdarkGray\u003e@\u003c/\u003e "
-          },
+          "type": "session",
           "style": "plain",
-          "type": "session"
+          "template": "{{ if .SSHSession }}\uf817 {{ end }}<cyan>{{ .UserName }}</> <darkGray>@</> <green>{{ .HostName }}</> "
         },
         {
+          "type": "path",
+          "style": "plain",
           "foreground": "lightYellow",
+          "template": "<darkGray>in </>{{ .Path }} ",
           "properties": {
-            "prefix": "\u003cdarkGray\u003ein \u003c/\u003e",
             "style": "full"
-          },
-          "style": "plain",
-          "type": "path"
+          }
         },
         {
+          "type": "git",
+          "style": "plain",
+          "foreground_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#ffeb3b{{ end }}",
+            "{{ if gt .Ahead 0 }}#8A4FFF{{ end }}",
+            "{{ if gt .Behind 0 }}#2EC4B6{{ end }}"
+          ],
+          "template": "<darkGray>on</> <white>git:</>{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 <#E84855>{{ .Working.String }}</>{{ end }}{{ if and (.Staging.Changed) (.Working.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 <#2FDA4E>{{ .Staging.String }}</>{{ end }} ",
           "properties": {
-            "prefix": "\u003cdarkGray\u003eon\u003c/\u003e \u003cwhite\u003egit:\u003c/\u003e",
-            "display_stash_count": true,
-            "display_upstream_icon": false,
-            "display_status": true,
-            "status_colors_enabled": true,
-            "color_background": false,
-            "local_changes_color": "#ffeb3b",
-            "working_color": "#E84855",
-            "staging_color": "#2FDA4E",
-            "ahead_color": "#2EC4B6",
-            "behind_color": "#8A4FFF"
-          },
-          "style": "plain",
-          "type": "git"
+            "fetch_stash_count": true,
+            "fetch_status": true,
+            "fetch_upstream_icon": false
+          }
         },
         {
+          "type": "time",
+          "style": "plain",
           "foreground": "darkGray",
-          "properties": {
-            "postfix": "]",
-            "prefix": "["
-          },
-          "style": "plain",
-          "type": "time"
+          "template": "[{{ .CurrentDate | date .Format }}]"
         },
         {
-          "foreground": "red",
-          "properties": {
-            "always_numeric": true,
-            "prefix": " C:"
-          },
+          "type": "exit",
           "style": "plain",
-          "type": "exit"
+          "foreground": "red",
+          "template": " C:{{ if gt .Code 0 }}\uf00d {{ .Code }}{{ else }}\uf42e{{ end }} "
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
       "type": "newline"
     },
     {
+      "type": "prompt",
       "alignment": "left",
       "segments": [
         {
-          "foreground": "lightRed",
-          "properties": {
-            "postfix": "",
-            "prefix": "",
-            "text": "$"
-          },
+          "type": "text",
           "style": "plain",
-          "type": "text"
+          "foreground": "lightRed",
+          "template": "$"
         }
-      ],
-      "type": "prompt"
+      ]
     }
-  ],
-  "final_space": true
+  ]
 }

@@ -2,8 +2,11 @@
 choco install -y -notsilent notepadplusplus openssl git
 
 ### Other choco installs
-choco install -y -notsilent gitextensions gimp python3 winmerge postman nodejs
-choco install -y gnupg pdftk sysinternals autohotkey 7zip nmap
+winget 
+choco install -y -notsilent gitextensions gimp python3 winmerge 
+winget install --interactive nodejs postman
+choco install -y gnupg pdftk autohotkey 7zip nmap
+winget install sysinternals
 
 ### Allow scripts May need to be done manually
 #Set-ExecutionPolicy RemoteSigned Should already be done before this script can be ran
@@ -13,10 +16,8 @@ Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
 ### Colorful git prompts
 Install-Module -Name posh-git -Scope AllUsers -AllowPrerelease -Repository PSGallery
-Install-Module -Name oh-my-posh -Scope AllUsers -AllowPrerelease -Repository PSGallery
-#Install-Module -Name PSReadLine -Scope AllUsers -AllowPrerelease -Repository PSGallery -SkipPublisherCheck
-
-# Can run Get-PoshThemes to determine which current theme to use, set it in Profile.ps1
+winget install JanDeDobbeleer.OhMyPosh -s winget
+oh-my-posh init pwsh --config custom-ys-omptheme.json
 
 ### Install other modules
 Install-Module -Name Az -Scope AllUsers -Repository PSGallery -Force
