@@ -17,7 +17,6 @@ Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 ### Colorful git prompts
 Install-Module -Name posh-git -Scope AllUsers -AllowPrerelease -Repository PSGallery
 winget install JanDeDobbeleer.OhMyPosh -s winget
-oh-my-posh init pwsh --config custom-ys-omptheme.json
 
 ### Install other modules
 Install-Module -Name Az -Scope AllUsers -Repository PSGallery -Force
