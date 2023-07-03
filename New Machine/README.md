@@ -1,15 +1,13 @@
 # Pre-script steps
-*Run these so that you can run New Machine Chocolatey.ps1*
+*Run these so that you can run New Machine winget.ps1*
 - Relax execution policy
     
       Set-ExecutionPolicy AllSigned
 
   - Even if you will set it to Unrestricted later, leave as signed until the machine is mostly setup
 
-- Install np++, openssl, and git through Chocolatey
+- Install packages through winget (see `New Machine winget.ps1`)
   
-      choco install -y -notsilent notepadplusplus openssl git
-
 - Clone personal repositories
 
       mkdir C:\etc\GitHub
@@ -19,7 +17,7 @@
 - Install Powershell 7
 - Install Windows Terminal from the Windows Store
 - Download FantasqueSansMono font from https://www.nerdfonts.com/font-downloads aka https://github.com/ryanoasis/nerd-fonts/releases
-  - Install FantasqueSansMNerdFont-Regular for all users
+  - Install FantasqueSansMNerdFont-Regular.ttf for all users
   - Then update custom font for Windows Terminal in the settings profiles.defaults.font.face:"FantasqueSansM Nerd Font"
 - Migrate Outlook signature
 - Migrate Windows features & settings

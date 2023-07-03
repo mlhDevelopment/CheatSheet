@@ -2,8 +2,7 @@
 
 # Prompts
 Import-Module posh-git
-Import-Module oh-my-posh
-Set-PoshPrompt -Theme C:\etc\GitHub\CheatSheet\custom-ys-omptheme.json
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\thecyberden.omp.json" | Invoke-Expression
 
 # Shortcuts
 Set-Alias npp "C:\Program Files\Notepad++\notepad++.exe"
@@ -15,16 +14,6 @@ function gitmergeall {
   git mergetool --gui .
   write-host "Consider cleaning the following:" -ForegroundColor Yellow
   git clean -n
-}
-
-function ShowUrlParts([string]$Url) {
-  write-verbose $Url
-  $Uri = [Uri]$Url
-	
-  Write-Output $Uri.GetLeftPart([System.UriPartial]::Path)
-	
-  $qsParts = [system.web.httputility]::ParseQueryString($Uri.Query)
-  $qsParts | % { Write-Output ("  {0}={1}" -f $_, $qsParts[$_] ) }
 }
 
 function Monitor-Website([string]$url, [int]$sleep = 3) {

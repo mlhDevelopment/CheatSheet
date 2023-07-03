@@ -2,15 +2,15 @@
 
 ## Definitions
 
-- PEM – Most common format, extensions include .crt, .cer, .key, .pem; can have multiple certificates and/or keys in a single file, but more common to have a single entity per file
-- DER – Binary version of PEM format, extensions include .der, .cer; typically used with Java applications
-- PKCS12 – Format used by Windows certificate store, extensions include .p12, .pfx; can combine certificates, chain certificates, and keys into a single file; is password protected
-- PKCS7 – Format used by Windows and Tomcat, extensions include .p7b, .p7c; can combine certificates and chain certificates, but cannot include the key
-- PKCS10 – Certification Request Standard, format certificate signing requests
-- RSA – Format for public & private keys; aka PKCS1
+- PEM - Most common format, extensions include .crt, .cer, .key, .pem; can have multiple certificates and/or keys in a single file, but more common to have a single entity per file
+- DER - Binary version of PEM format, extensions include .der, .cer; typically used with Java applications
+- PKCS12 - Format used by Windows certificate store, extensions include .p12, .pfx; can combine certificates, chain certificates, and keys into a single file; is password protected
+- PKCS7 - Format used by Windows and Tomcat, extensions include .p7b, .p7c; can combine certificates and chain certificates, but cannot include the key
+- PKCS10 - Certification Request Standard, format certificate signing requests
+- RSA - Format for public & private keys; aka PKCS1
 - ECDSA - Elliptic Curve Digital Signature Algorithm, an alternative to RSA that is smaller & faster but not as widely adopted (e.g. IIS)
-- CSR – Certificate Signing Request, typically done in PKSC10
-- CA – Certificate Authority, an organization that signs CSRs and is typically the trusted party between all parties involved (e.g. server & client)
+- CSR - Certificate Signing Request, typically done in PKSC10
+- CA - Certificate Authority, an organization that signs CSRs and is typically the trusted party between all parties involved (e.g. server & client)
 
 ## Tips
 
@@ -22,7 +22,7 @@ Sometimes the `-inform <form>` parameter does not need to be specified if OpenSS
 
 If not specified, the `-in <inputfile>` parameter defaults to input from STDIN
 
-PKCS12 to PEM – OpenSSL puts all certificates and the private key into a single file. Manually separate the certificates & keys by opening the output file in a text editor and copy each certificate and then private key (including the BEGIN/END statements) to its own individual text file and save them, naming them appropriately (.crt, .key).
+PKCS12 to PEM - OpenSSL puts all certificates and the private key into a single file. Manually separate the certificates & keys by opening the output file in a text editor and copy each certificate and then private key (including the BEGIN/END statements) to its own individual text file and save them, naming them appropriately (.crt, .key).
 
 When creating CSRs & certificates, a lot of data entry is required. It is possible to pull the entered information from configuration files. See the documentation for more details.
  
@@ -33,10 +33,10 @@ To read configuration settings from a specific file, set the environment variabl
 # Creation
 
 ### Create self-signed certificate & key (valid for 10 years)
-	openssl req -x509 -days 3650 -newkey rsa:2048 –nodes -sha256 -keyout private.key -out public.crt
+	openssl req -x509 -days 3650 -newkey rsa:2048 -nodes -sha256 -keyout private.key -out public.crt
 
 ### Create new private key (RSA) and password protect it
-	openssl genrsa –aes256 -out private.key
+	openssl genrsa -aes256 -out private.key
 
 ### Create new private key (EC)
 	openssl ecparam -name secp384r1 -genkey -out private.key
@@ -45,10 +45,10 @@ To read configuration settings from a specific file, set the environment variabl
 	openssl req -new -key private.key -out csr.csr
 
 ### Create CSR and a new private key
-	openssl req -new -newkey rsa:2048 -nodes –keyout newkey.key -out csr.csr
+	openssl req -new -newkey rsa:2048 -nodes -keyout newkey.key -out csr.csr
 
 ### Create CSR from config file (see below)
-	openssl req -new -key private.key -out csr.csr –config configfile.conf
+	openssl req -new -key private.key -out csr.csr -config configfile.conf
 
 NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-config` to require the entire configuration setup.
 
@@ -74,19 +74,19 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 	openssl x509 -inform der -noout -text -in cert.der
 
 ### Read PFX formatted file
-	openssl pkcs12 -info -nodes -in cert.pfx
+	openssl pkcs12 -info -nodes -in cert.pfx -passin pass:password
 
 ### Read a CSR (in PEM format)
 	openssl req -in csr.csr -noout -text
 
 ### Read the issuer and subject DN (from a PEM)
-	openssl x509 -inform pem -noout –issuer -subject -in cert.crt
+	openssl x509 -inform pem -noout -issuer -subject -in cert.crt
 
 ### Read an RSA key (in PEM format; not very interesting)
 	openssl rsa -inform pem -noout -text -in rsakey.key
 
 ### View a hash of a certificate (certificate in PEM format)
-	openssl x509 –inform pem -noout -hash -in cert.crt
+	openssl x509 -inform pem -noout -hash -in cert.crt
 
 ### Read a P7B (in PEM format)
 	openssl pkcs7 -print_certs -in cert.p7b
@@ -100,7 +100,7 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 	openssl rsa -outform der -in rsakey.key -out rsakey.der
 
 ### Convert PEM to PFX 🔥
-	openssl pkcs12 -export -in public.crt -inkey private.key -out cert.pfx
+	openssl pkcs12 -export -in public.crt -inkey private.key -out cert.pfx -passout pass:password
 
 #### ... with SHA2 signing capabilities (added to above)
 	-CSP "Microsoft Enhanced RSA and AES Cryptographic Provider"
@@ -109,7 +109,7 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 	-name "Friendly, Exp 2099"
 
 ### Convert PFX to PEM (exports as multiple certs in single file) 
-	openssl pkcs12 -nodes -in cert.pfx -out cert.pem
+	openssl pkcs12 -nodes -in cert.pfx -out cert.pem -passin pass:password
 
 ### Convert DER to PEM
 	openssl x509 -inform der -in cert.der -out certificate.crt
@@ -176,4 +176,4 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 To generate the CSR:
 
     openssl genrsa -out private.key
-    openssl req -new -key private.key -out csr.csr –config configfile.conf
+    openssl req -new -key private.key -out csr.csr -config configfile.conf
