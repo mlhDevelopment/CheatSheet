@@ -16,7 +16,7 @@ function gitmergeall {
   git clean -n
 }
 
-function Monitor-Website([string]$url, [int]$sleep = 3) {
+function Monitor-Website([string]$url, [int]$sleep = 3, [string]$TestForContent = '') {
   # Output legend
   Write-Host -ForegroundColor Yellow '100 ' -NoNewline;
   Write-Host -ForegroundColor White '200 ' -NoNewline;
@@ -48,8 +48,17 @@ function Monitor-Website([string]$url, [int]$sleep = 3) {
       $color = [System.ConsoleColor]::Yellow       # 100s
     }
 
+    $contentSuffix = ''
+    if('' -ne $TestForContent) {
+      if($response.Content.Contains($TestForContent)) {
+        $contentSuffix = ' ✓'
+      } else {
+        $contentSuffix = ' ✗'
+      }
+    }
+
     # Make the result dance so we can see it change over time
-    $display = "$([math]::Round($responseTime, 0)) ms"
+    $display = "$([math]::Round($responseTime, 0)) ms$contentSuffix"
     $padding = [math]::round(1 - [math]::cos([math]::PI/25 * $i), 1) * 10 + $display.Length
     #$display = "$($response.StatusCode) $([math]::Round($responseTime, 0)) ms"
     
