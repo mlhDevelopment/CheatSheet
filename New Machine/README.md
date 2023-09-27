@@ -1,35 +1,38 @@
-# Pre-script steps
-*Run these so that you can run New Machine winget.ps1*
+# Setting up a new machine (personal or professional)
+
+## Pre-script steps
+
+Run these so that you can run New Machine winget.ps1
+
 - Relax execution policy
-    
-      Set-ExecutionPolicy AllSigned
+
+    Set-ExecutionPolicy AllSigned
 
   - Even if you will set it to Unrestricted later, leave as signed until the machine is mostly setup
 
-- Install packages through winget (see `New Machine winget.ps1`)
-  
-- Clone personal repositories
+- Clone this repository to use setup scripts
 
       mkdir C:\etc\GitHub
+      git clone CheatSheet.git
 
-# Other setup steps
-*Things not automated by PowerShell (see PowerShell\New Machine \*.ps1) that can be ran independently of the setup steps*
-- Install Powershell 7
-- Install Windows Terminal from the Windows Store
-- Download FantasqueSansMono font from https://www.nerdfonts.com/font-downloads aka https://github.com/ryanoasis/nerd-fonts/releases
+- Install packages through winget
+
+  1. Import standard tools (`winget import winget-apps.json`)
+  2. Export from prior machine (`winget export -o winget.json`) and import (`winget import winget.json`)
+  3. Install manually as needed (useful commands are search, show, install, list; always use --id parameter)
+  4. Whatever you choose, review the list before importing (did you want that version of Python?)
+  
+- Configure PowerShell (`powershell-configuration.ps1`)
+- Update PowerShell Profile (see `profile.ps1` for instructions)
+
+## Other setup steps
+
+Things not automated by PowerShell (see PowerShell\New Machine \*.ps1) that can be ran independently of the setup steps
+
+- Download FantasqueSansMono font from [NerdFonts](https://www.nerdfonts.com/font-downloads) ([direct link](https://github.com/ryanoasis/nerd-fonts/releases))
   - Install FantasqueSansMNerdFont-Regular.ttf for all users
   - Then update custom font for Windows Terminal in the settings profiles.defaults.font.face:"FantasqueSansM Nerd Font"
 - Migrate Outlook signature
 - Migrate Windows features & settings
-- Upgrade bios and update bios settings
-
-
-## Install self-updating & paid apps
-- Firefox Developer Edition
-- Visual Studio
-- Visual Studio Code (Windows Store)
-- SSMS
-- SQL Dev Edition
-- SSMS Tool Kit
-- Printer/scanner driver
-
+- Upgrade BIOS and update BIOS settings
+- Apply Windows updates and vendor driver updates
