@@ -69,6 +69,7 @@
     powercfg /h off
 
 ### Allow aliased local host to accept windows authentication
+
     New-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0\ -Name 'BackConnectionHostNames' -Value ([string[]]('devlocal')) -PropertyType 'MultiString'
     Set-ItemProperty -Path HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0\ -Name 'BackConnectionHostNames' -Value ([string[]]('dev-sql','devlocal'))
 

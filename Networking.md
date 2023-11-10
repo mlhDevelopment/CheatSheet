@@ -71,24 +71,37 @@ This will print verbose messages if enabled, so may require `$VerbosePreference 
 ### Post OIDC client credentials
     curl.exe -d "client_id=myClientId&grant_type=client_credentials&client_secret=myClientSecret" "https://idpserver/connect/token"
 
-
-## OpenSSL
+## OpenSSL Certificate Client
 
 ### Basic client connect
+
     openssl s_client -connect server:443
 
+- Connection stays open to send data (`ctrl-c` to end)
+
 ### Retrieve certificates
+
     openssl s_client -showcerts -servername server -connect server:443
+
 - `showcerts` for chain
 - `servername` for SNI
 
 ### Verify certificates
+
     openssl s_client -verify_return_error -servername server -connect server:443
-- WIP (`verify_return_error` error on top SSL sites)
+
+- `verify_return_error` closes the connection after getting the certs
+- Unaware of Windows cert store so "unable to get local issuer certificate" error [when `CAfile` is ommitted](https://stackoverflow.com/a/43492782/295686)
+- "unable to get local issuer certificate" will cause a non-zero return (`$?` is false)
+
+### Print only expiration dates
+
+    '' | openssl s_client -servername server -connect server:443 | openssl x509 -noout -dates
+    '' | openssl s_client -connect server:443 *>&1 | ? { $_ -like '*NotAfter:*' }
 
 ### Retrieve certificates for SMTP server
-    openssl s_client -starttls smtp -connect server:443
 
+    openssl s_client -starttls smtp -connect server:443
 
 ## Time & Date
 

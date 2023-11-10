@@ -35,6 +35,9 @@
 					"PackageIdentifier": "Microsoft.AzureCLI"
 				},
 				{
+					"PackageIdentifier": "Microsoft.DotNet.HostingBundle.7"
+				},
+				{
 					"PackageIdentifier": "Microsoft.Edge"
 				},
 				{
@@ -53,7 +56,7 @@
 					"PackageIdentifier": "Microsoft.SQLServerManagementStudio"
 				},
 				{
-					"PackageIdentifier": "Microsoft.SQLServer.2022.Developer"	
+					"PackageIdentifier": "Microsoft.SQLServer.2022.Developer"
 				},
 				{
 					"PackageIdentifier": "Microsoft.Teams"
