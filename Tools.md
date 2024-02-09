@@ -22,15 +22,18 @@
     </system.net>
 
 ### ASP.NET Precompile a web site
+
     aspnet_compiler.exe -v /WebsiteName
     aspnet_compiler.exe -p "C:\Projects\PathToWebsite\." -v /WebsiteName
     aspnet_compiler.exe -p "$(ProjectDir)." -v /$(ProjectName)
+
 - C:\Windows\Microsoft.NET\Framework\v2.0.50727\aspnet_compiler for .NET 2
 - C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler for .NET 4
 
 ## LogParser
 
 ### Examples
+
     LogParser.exe "select c-ip, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime from $path where time > '13:00:00'"
     LogParser.exe "select c-ip as IP_Address, sc-status AS HTTP_Status_Code, count(*) as Count INTO accessByIp.csv from \\server\path\log.log group by c-ip, sc-status"
     LogParser.exe "select TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime, sc-status, time-taken, cs-uri-stem INTO out.csv from 'log with spaces.log'"
@@ -55,10 +58,16 @@
     - `-stats:OFF` - disable stats at the end
     - `-q:ON` - quiet mode (don't page, display all results)
 
-### Aggregate
+### Aggregate as an array of filenames
+
     $logs = ls -Filter *.log
     $logs | % { LogParser.exe "select '$($_.name)' as file, time-taken, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO $($_.name).csv from '$($_.name)' where time > '00:45:00'" }
     $logs | % { get-content "$($_.name).csv" | Add-Content CombinedLogs.csv }
+
+### Aggregate as single file
+
+    get-content *.log | out-file combined.lplog
+    LogParser.exe "select cs-uri-stem, cs(User-Agent), TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO lp.csv FROM combined.lplog WHERE time > '21:10:00' and time < '21:20:00'"
 
 # Windows
 

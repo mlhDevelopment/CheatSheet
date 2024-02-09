@@ -678,7 +678,7 @@ PRINT @alter_command
 EXEC sp_executesql @alter_command
 ```
 
-### Check recovery mode ()
+### Check recovery mode (FULL vs SIMPLE)
 
     SELECT name, recovery_model_desc FROM sys.databases
 
