@@ -1,0 +1,137 @@
+{
+	"$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+	"CreationDate": "2023-09-26T11:49:41.695-00:00",
+	"Sources": [
+		{
+			"Packages": [
+				{
+					"PackageIdentifier": "7zip.7zip"
+				},
+				{
+					"PackageIdentifier": "AutoHotkey.AutoHotkey"
+				},
+				{
+					"PackageIdentifier": "GIMP.GIMP"
+				},
+				{
+					"PackageIdentifier": "Git.Git"
+				},
+				{
+					"PackageIdentifier": "GitExtensionsTeam.GitExtensions"
+				},
+				{
+					"PackageIdentifier": "GnuPG.GnuPG"
+				},
+				{
+					"PackageIdentifier": "Google.Chrome.Canary"
+				},
+				{
+					"PackageIdentifier": "Insecure.Nmap"
+				},
+				{
+					"PackageIdentifier": "JanDeDobbeleer.OhMyPosh"
+				},
+				{
+					"PackageIdentifier": "Microsoft.AzureCLI"
+				},
+				{
+					"PackageIdentifier": "Microsoft.DotNet.HostingBundle.7"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Edge"
+				},
+				{
+					"PackageIdentifier": "Microsoft.LogParser"
+				},
+				{
+					"PackageIdentifier": "Microsoft.OneDrive"
+				},
+				{
+					"PackageIdentifier": "Microsoft.PowerShell"
+				},
+				{
+					"PackageIdentifier": "Microsoft.PowerToys"
+				},
+				{
+					"PackageIdentifier": "Microsoft.SQLServerManagementStudio"
+				},
+				{
+					"PackageIdentifier": "Microsoft.SQLServer.2022.Developer"
+				},
+				{
+					"PackageIdentifier": "Microsoft.Teams"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VisualStudio.2022.Professional"
+				},
+				{
+					"PackageIdentifier": "Microsoft.VisualStudioCode"
+				},
+				{
+					"PackageIdentifier": "Microsoft.WindowsTerminal"
+				},
+				{
+					"PackageIdentifier": "Mozilla.Firefox.DeveloperEdition"
+				},
+				{
+					"PackageIdentifier": "Notepad++.Notepad++"
+				},
+				{
+					"PackageIdentifier": "Oracle.VirtualBox"
+				},
+				{
+					"PackageIdentifier": "PDFLabs.PDFtk.Free"
+				},
+				{
+					"PackageIdentifier": "Perforce.P4V"
+				},
+				{
+					"PackageIdentifier": "Postman.Postman"
+				},
+				{
+					"PackageIdentifier": "Python.Python.3.11"
+				},
+				{
+					"PackageIdentifier": "ShiningLight.OpenSSL"
+				},
+				{
+					"PackageIdentifier": "TechSmith.Snagit.2023"
+				},
+				{
+					"PackageIdentifier": "Toggl.TogglTrack"
+				},
+				{
+					"PackageIdentifier": "VideoLAN.VLC"
+				},
+				{
+					"PackageIdentifier": "WinDirStat.WinDirStat"
+				},
+				{
+					"PackageIdentifier": "WinMerge.WinMerge"
+				},
+				{
+					"PackageIdentifier": "WiresharkFoundation.Wireshark"
+				},
+				{
+					"PackageIdentifier": "ZAP.ZAP"
+				},
+				{
+					"PackageIdentifier": "Zoom.Zoom"
+				},
+				{
+					"PackageIdentifier": "icsharpcode.ILSpy"
+				},
+				{
+					"PackageIdentifier": "ultrapico.expresso"
+				}
+			],
+			"SourceDetails": {
+				"Argument": "https://cdn.winget.microsoft.com/cache",
+				"Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+				"Name": "winget",
+				"Type": "Microsoft.PreIndexed.Package"
+			}
+		}
+	],
+	"WinGetVersion": "1.5.2201"
+}

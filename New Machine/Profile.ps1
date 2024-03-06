@@ -2,8 +2,7 @@
 
 # Prompts
 Import-Module posh-git
-Import-Module oh-my-posh
-Set-PoshPrompt -Theme C:\etc\GitHub\CheatSheet\custom-ys-omptheme.json
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\thecyberden.omp.json" | Invoke-Expression
 
 # Shortcuts
 Set-Alias npp "C:\Program Files\Notepad++\notepad++.exe"
@@ -17,17 +16,7 @@ function gitmergeall {
   git clean -n
 }
 
-function ShowUrlParts([string]$Url) {
-  write-verbose $Url
-  $Uri = [Uri]$Url
-	
-  Write-Output $Uri.GetLeftPart([System.UriPartial]::Path)
-	
-  $qsParts = [system.web.httputility]::ParseQueryString($Uri.Query)
-  $qsParts | % { Write-Output ("  {0}={1}" -f $_, $qsParts[$_] ) }
-}
-
-function Monitor-Website([string]$url, [int]$sleep = 3) {
+function Monitor-Website([string]$url, [int]$sleep = 3, [string]$TestForContent = '') {
   # Output legend
   Write-Host -ForegroundColor Yellow '100 ' -NoNewline;
   Write-Host -ForegroundColor White '200 ' -NoNewline;
@@ -59,8 +48,17 @@ function Monitor-Website([string]$url, [int]$sleep = 3) {
       $color = [System.ConsoleColor]::Yellow       # 100s
     }
 
+    $contentSuffix = ''
+    if('' -ne $TestForContent) {
+      if($response.Content.Contains($TestForContent)) {
+        $contentSuffix = ' ✓'
+      } else {
+        $contentSuffix = ' ✗'
+      }
+    }
+
     # Make the result dance so we can see it change over time
-    $display = "$([math]::Round($responseTime, 0)) ms"
+    $display = "$([math]::Round($responseTime, 0)) ms$contentSuffix"
     $padding = [math]::round(1 - [math]::cos([math]::PI/25 * $i), 1) * 10 + $display.Length
     #$display = "$($response.StatusCode) $([math]::Round($responseTime, 0)) ms"
     
