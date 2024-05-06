@@ -1,24 +1,44 @@
 # Networking
 
-## nmap
-
-### Full scan
-    nmap -v -A server
+## Connectivity (nmap)
 
 ### Scan a single port
+
     nmap -Pn -p 80 server
 
 ### Scan a UDP port
+
     nmap -Pn -sU -p 19132 server
 
 ### Host info (windows)
+
     nmap -sU --script nbstat.nse -p137 server
     nmap --script smb-os-discovery.nse -p445 server
+
+### List ciphers
+
+    nmap --script ssl-enum-ciphers.nse -p 443 server
+
+### Port Scan
+
+#### Full (slow and noisy)
+
+    nmap -v -A server
+
+#### Triage most common ports
+
+    nmap -n -F -oN nmap_f_server.txt server
+
+#### Complete (OS and service version detection, slow)
+
+    nmap -sV -O -oN nmap_vo_server.txt server
 
 ## Curl & Invoke-WebRequest
 
 ### Basic request
+
     curl -k -s -f -w "%{http_code}" https://server/endpoint -o C:\etc\tmp.junk
+
 - -k: Allow insecure connections (don't verify certificate)
 - -s: Silent mode
 - -v: Verbose mode
@@ -85,6 +105,7 @@ This will print verbose messages if enabled, so may require `$VerbosePreference 
 
 - `showcerts` for chain
 - `servername` for SNI
+- `tls1_2` for TLS 1.2 only
 
 ### Verify certificates
 
@@ -106,18 +127,23 @@ This will print verbose messages if enabled, so may require `$VerbosePreference 
 ## Time & Date
 
 ### Display a chart of clock drift compared to a server
+
     w32tm /stripchart /dataonly /computer:pool.ntp.org
 
 ### Show time sync server
+
     w32tm /query /status
 
 ### Force a resync
+
     w32tm /resync /rediscover
 
 ### Set to use an explicit pool
+
     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
 
 ### Set to use domain heirarchy
+
     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
 
 # Websites & Hosting
