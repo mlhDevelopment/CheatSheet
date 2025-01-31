@@ -175,11 +175,22 @@ then restart
 ### String to binary byte array (UTF8)
     [system.text.encoding]::UTF8.GetBytes($a)
 
-### Get a random array of numbers
-    (Get-Random $(0..255) -Count 16 | % { "{0:x2}" -f $_ }) -join '' | Set-Clipboard
-
 ### Create a self-signed certificate
     New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName "testdomain.local" -FriendlyName "testdomain" -NotAfter (Get-Date).AddYears(10)
+
+## Converting arrays of values
+
+### Get a random array of byte values
+
+    0..255 | Get-SecureRandom -Count 32
+    
+#### ... Output as hex
+
+    (0..255 | Get-SecureRandom -Count 32 | % { "{0:x2}" -f $_ }) -join ''
+
+#### ... Output as Base64
+
+    [System.Convert]::ToBase64String((0..255 | Get-SecureRandom -Count 32))
 
 # Robocopy
 
