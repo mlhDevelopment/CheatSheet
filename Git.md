@@ -52,6 +52,10 @@
 
     git config --global pull.rebase true
 
+### List all configs
+
+    git config --list --show-origin
+
 ## Remote Management
 
 ### View remote repositories
