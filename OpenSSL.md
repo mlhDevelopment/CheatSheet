@@ -30,6 +30,10 @@ PKCS12 to PEM - OpenSSL puts all certificates and the private key into a single 
 
 When creating CSRs & certificates, a lot of data entry is required. It is possible to pull the entered information from configuration files. See the documentation for more details.
 
+### Note on v3
+
+Version 3 marked many depracated algorithms as obsolete. If you receive a message like ':unsupported:' with a reference to an algorithm, add the option `-legacy` to permit obsolete algorithms.
+
 ## Commands
 
 ### Creation
@@ -90,6 +94,10 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 
     openssl pkcs12 -info -nodes -in cert.pfx -passin pass:password
 
+#### Determine PFX encryption method
+
+    openssl pkcs12 -info -in cert.pfx -nomacver -noout -passin pass:unknown
+
 #### Read a CSR (in PEM format)
 
     openssl req -in csr.csr -noout -text
@@ -132,9 +140,15 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 
     -name "Friendly, Exp 2099"
 
-#### Convert PFX to PEM (exports as multiple certs in single file)
+##### ... with older (SHA1, TDES, CBC)
 
-    openssl pkcs12 -nodes -in cert.pfx -out cert.pem -passin pass:password
+    -legacy
+
+Without it v3 uses PBES2, PBKDF2, AES-256-CBC
+
+#### Convert PFX to PEM (crt file with key inside)
+
+    openssl pkcs12 -nodes -clcerts -in cert.pfx -out cert.crt -passin pass:password
 
 #### Convert DER to PEM
 
@@ -177,6 +191,22 @@ NB: side-by-side installation of v1 and v3 corrupted some settings and caused `-
 1. PKCS7 to PEM
 2. Manually combine public cert as PEM to PKCS7 PEM in a single file
 3. PEM to PKCS12
+
+## CertUtil
+
+### Read certificate file (.crt, .pfx, .pem)
+
+    certutil -dump cert.crt
+
+### Read PFX specifics
+
+    certutil -dumppfx cert.pfx
+
+### Convert PEM to PFX
+
+    certutil -mergepfx input.crt output.pfx
+
+There also must be a "input.key" file in the same folder
 
 ## Configuration
 

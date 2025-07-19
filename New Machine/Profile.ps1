@@ -10,10 +10,10 @@ Set-Alias mo Measure-Object
 Remove-Alias diff -Force -EA SilentlyContinue
 Set-Alias diff 'C:\Program Files\WinMerge\WinMergeU.exe'
 
-function gitmergeall {
-  git mergetool --gui .
-  write-host "Consider cleaning the following:" -ForegroundColor Yellow
-  git clean -n
+function gitlfs-revertToPointers {
+  git read-tree HEAD
+  $env:GIT_LFS_SKIP_SMUDGE=1
+  git checkout -f HEAD
 }
 
 function Monitor-Website([string]$url, [int]$sleep = 3, [string]$TestForContent = '') {
