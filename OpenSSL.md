@@ -165,6 +165,7 @@ Without it v3 uses PBES2, PBKDF2, AES-256-CBC
 #### Convert PEMs to P7B
 
     openssl crl2pkcs7 -nocrl -certfile domain.crt -certfile ca-chain.crt -out domain.p7b
+    openssl crl2pkcs7 -nocrl -certfile domain.crt -certfile intermediate.crt -certfile root.crt -out domain.p7b
 
 #### Convert encrypted key to plain (encoded)
 

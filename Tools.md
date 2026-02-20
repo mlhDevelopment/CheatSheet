@@ -54,6 +54,10 @@
 
     LogParser.exe "SELECT TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime, sc-status, time-taken, cs-uri-stem INTO out.csv from 'log with spaces.log'"
 
+## Aggregate multiple logs into a single file
+
+    get-content *.log | % {$i=0}{$i += 1; if($i -lt 5 -or $_ -notlike '#*') { $_ } } | out-file combined.lplog
+
 ### Requests per minute, per second
 
     LogParser.exe "SELECT QUANTIZE(TO_TIMESTAMP(date, time), 60) AS PerMinute, COUNT(*) AS Total, SUM(sc-bytes) AS TotBytesSent INTO combined.csv FROM combined.lplog GROUP BY PerMinute ORDER BY PerMinute"
@@ -65,10 +69,6 @@
     $logs | % { LogParser.exe "select '$($_.name)' as file, time-taken, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO $($_.name).csv from '$($_.name)' where time > '00:45:00'" }
     $logs | % { get-content "$($_.name).csv" | Add-Content CombinedLogs.csv }
 
-## Aggregate multiple logs into a single file
-
-    get-content *.log | % {$i=0}{$i += 1; if($i -lt 5 -or $_ -notlike '#*') { $_ } } | out-file combined.lplog
-    LogParser.exe "select cs-uri-stem, cs(User-Agent), TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO combined.csv FROM combined.lplog WHERE time > '21:10:00' and time < '21:20:00'"
 
 # Windows
 
