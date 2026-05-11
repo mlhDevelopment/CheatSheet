@@ -40,7 +40,7 @@
     curl -k -s -f -w "%{http_code}" https://server/endpoint -o C:\etc\tmp.junk
 
 - -k: Allow insecure connections (don't verify certificate)
-- -s: Silent mode
+- -s: Silent mode (no progress bar)
 - -v: Verbose mode
 - -f: Fail silently on HTTP errors
 - -w <format>: Console output with custom format
@@ -52,13 +52,16 @@
 - -H <header>: Include header in request
 
 ### Post data
+
     curl.exe 'http://server/endpoint' --data-ascii '{"data": 42}' -H 'Content-Type: application/json'
     curl.exe -X POST -d '{"data": 42}' -H 'Content-Type: application/json' 'http://server/endpoint' 
 
 ### Monitor website (Curl)
+
     while($true) { $(curl -k -s -f -w "%{http_code}`n" https://server/endpoint -o C:\etc\tmp.junk); sleep 3 }
 
 ### Monitor website function
+
     function Monitor-Website([string]$url, [int]$sleep = 3) {
         while($true) { 
             [int]$result = $(curl -k -s -f -w "%{http_code}" $url -o C:\etc\tmp.junk)
@@ -78,17 +81,21 @@
     }
     
 ### Monitor website & parse response
+
     while($true) { $response = Invoke-WebRequest 'https://server/endpoint'; $results = $response.Content.split('searchTerm').Length; "$results".PadLeft($results * 3); Start-sleep 3 }
 
 This will print verbose messages if enabled, so may require `$VerbosePreference = "SilentlyContinue"` before starting
 
 ### Custom user agent (e.g. dye trace)
+
     curl -s -A "Mozilla/5.0 (mlhDevelopment)" "http://server/endpoint"
 
 ### Use a proxy (e.g. Fiddler)
+
     curl.exe 'http://server/endpoint' -x 127.0.0.1:8888
 
 ### Post OIDC client credentials
+
     curl.exe -d "client_id=myClientId&grant_type=client_credentials&client_secret=myClientSecret" "https://idpserver/connect/token"
 
 ## OpenSSL Certificate Client

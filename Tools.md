@@ -63,12 +63,16 @@
     LogParser.exe "SELECT QUANTIZE(TO_TIMESTAMP(date, time), 60) AS PerMinute, COUNT(*) AS Total, SUM(sc-bytes) AS TotBytesSent INTO combined.csv FROM combined.lplog GROUP BY PerMinute ORDER BY PerMinute"
     LogParser.exe "SELECT QUANTIZE(TO_TIMESTAMP(date, time), 1) AS PerSecond, COUNT(*) AS Total, SUM(sc-bytes) AS TotBytesSent INTO combined.csv FROM combined.lplog GROUP BY PerSecond ORDER BY PerSecond"
 
+### User Agents during a timeframe
+
+    LogParser.exe "SELECT TO_TIMESTAMP(date, time) AS LocalTime, cs(User-Agent) INTO combined.csv FROM combined.lplog WHERE time > '06:30:00' and time < '06:40:00'"
+    LogParser.exe "SELECT cs(User-Agent), count(*) as Count INTO combined.csv FROM combined.lplog WHERE time > '06:30:00' and time < '06:40:00' GROUP BY cs(User-Agent)"
+
 ## Aggregate multiple logs as an array of filenames
 
     $logs = ls -Filter *.log
     $logs | % { LogParser.exe "select '$($_.name)' as file, time-taken, TO_LOCALTIME(TO_TIMESTAMP(date, time)) AS LocalTime INTO $($_.name).csv from '$($_.name)' where time > '00:45:00'" }
     $logs | % { get-content "$($_.name).csv" | Add-Content CombinedLogs.csv }
-
 
 # Windows
 
