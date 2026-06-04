@@ -134,6 +134,10 @@ then restart
 
     subinacl.exe /service MyService /GRANT=MyServiceControlUser=STOE
 
+## View the last password change date
+
+    ([adsisearcher]"(Name=my name)").FindOne() | %{" "+ $_.properties.displayname + " " + [datetime]::fromfiletime($_.properties.pwdlastset[0])}
+
 # PowerShell
 
 ## Schedule a PowerShell Task
